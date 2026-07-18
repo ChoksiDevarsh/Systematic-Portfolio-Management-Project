@@ -1,0 +1,2 @@
+# Systematic Portfolio-Management Project
+A Python-based quantitative investing project that builds and backtests a NIFTY 100 momentum–quality rotation strategy. The system ranks stocks using medium-term price momentum and financial quality factors, constructs a rules-based portfolio, performs periodic rebalancing, accounts for transaction costs, and compares performance against the NIFTY 100 benchmark.
