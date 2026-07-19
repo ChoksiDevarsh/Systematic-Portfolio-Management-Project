@@ -6,7 +6,7 @@ DATA_DIR = PROJECT_ROOT / "data"
 RAW_DATA_DIR = DATA_DIR / "raw"
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
 
-SAMPLE_TICKER = [
+SAMPLE_TICKERS = [
     "RELIANCE.NS",
     "TCS.NS",
     "INFY.NS",
@@ -15,7 +15,7 @@ SAMPLE_TICKER = [
     "ITC.NS",
     "LT.NS",
     "BHARTIARTL.NS",
-    "SBI.NS",
+    "SBIN.NS",
     "MARUTI.NS",
 ]
 
