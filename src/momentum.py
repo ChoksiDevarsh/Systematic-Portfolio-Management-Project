@@ -57,22 +57,18 @@ def calculate_momentum(
         raise ValueError("Monthly price data cannot be empty.")
 
     if lookback_months <= skip_months:
-        raise ValueError(
-            "lookback_months must be greater than skip_months."
-        )
+        raise ValueError("lookback_months must be greater than skip_months.")
 
-    required_rows = lookback_months + 1
+    required_rows = lookback_months + skip_months + 1
 
     if len(monthly_prices) < required_rows:
-        raise ValueError(
-            f"At least {required_rows} monthly observations are required."
-        )
+        raise ValueError(f"At least {required_rows} monthly observations are required.")
 
-    end_position = -(skip_months + 1)
-    start_position = -(lookback_months + 1)
+    end_index = len(monthly_prices) - skip_months - 1
+    start_index = end_index - lookback_months
 
-    end_prices = monthly_prices.iloc[end_position]
-    start_prices = monthly_prices.iloc[start_position]
+    end_prices = monthly_prices.iloc[end_index]
+    start_prices = monthly_prices.iloc[start_index]
 
     momentum = end_prices.div(start_prices).sub(1)
 
@@ -130,13 +126,9 @@ def calculate_momentum_scores(prices: pd.DataFrame) -> pd.DataFrame:
         axis=1,
     ).dropna()
 
-    scores["momentum_12_1_rank"] = percentile_rank(
-        scores["momentum_12_1"]
-    )
+    scores["momentum_12_1_rank"] = percentile_rank(scores["momentum_12_1"])
 
-    scores["momentum_6_1_rank"] = percentile_rank(
-        scores["momentum_6_1"]
-    )
+    scores["momentum_6_1_rank"] = percentile_rank(scores["momentum_6_1"])
 
     scores["momentum_score"] = (
         MOMENTUM_12_1_WEIGHT * scores["momentum_12_1_rank"]
@@ -144,9 +136,7 @@ def calculate_momentum_scores(prices: pd.DataFrame) -> pd.DataFrame:
     )
 
     scores["momentum_rank"] = (
-        scores["momentum_score"]
-        .rank(method="first", ascending=False)
-        .astype(int)
+        scores["momentum_score"].rank(method="first", ascending=False).astype(int)
     )
 
     return scores.sort_values(

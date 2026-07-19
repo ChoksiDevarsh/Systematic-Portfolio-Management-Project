@@ -1,5 +1,8 @@
 """Run the initial NIFTY momentum strategy prototype."""
 
+import pandas as pd
+
+from src.backtest import run_backtest
 from src.config import (
     END_DATE,
     NUMBER_OF_STOCKS,
@@ -10,6 +13,7 @@ from src.config import (
 )
 from src.data_loader import download_adjusted_prices, save_prices
 from src.momentum import calculate_momentum_scores
+from src.performance import calculate_metrics
 from src.portfolio import select_top_stocks, validate_portfolio_weights
 
 
@@ -75,6 +79,27 @@ def main() -> None:
     )
 
     print(f"\nPortfolio saved to: {portfolio_path}")
+
+    print("\nRunning simple monthly backtest...")
+    backtest_results = run_backtest(
+        prices=prices,
+        number_of_stocks=NUMBER_OF_STOCKS,
+        cost_rate=0.001,
+    )
+    if not backtest_results.empty:
+        performance = calculate_metrics(
+            pd.DataFrame(
+                {
+                    "portfolio": backtest_results["portfolio_return"],
+                    "benchmark": backtest_results["benchmark_return"],
+                }
+            )
+        )
+        print(backtest_results.head())
+        print("\nBacktest metrics:")
+        for key, value in performance.items():
+            print(f"{key}: {value:.4f}")
+
     print("\nStrategy prototype completed successfully.")
 
 
